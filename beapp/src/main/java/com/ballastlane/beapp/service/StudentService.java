@@ -24,7 +24,7 @@ public class StudentService {
     }
 
     public Student saveStudent(Student student) throws Exception {
-        if (studentHelper.isValidAge(student.getDob())) {
+        if (studentHelper.isValidAge(student.getDateOfBirth())) {
             throw new CustomErrorException(
                     HttpStatus.BAD_REQUEST,
                     "Minimum 16 years old"

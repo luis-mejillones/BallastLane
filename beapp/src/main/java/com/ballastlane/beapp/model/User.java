@@ -5,31 +5,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Date;
 
 @Entity
-@Table(name = "student")
+@Table(name = "user")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Student {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
-
-    @Column(nullable = false)
-    private Date dateOfBirth;
-
-    private String address;
+    private String name;
 
     @Column(nullable = false)
     private String email;
 
-    private String phoneNumber;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

@@ -8,28 +8,20 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "student")
+@Table(name = "course")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Student {
+public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String firstName;
+    private String name;
 
     @Column(nullable = false)
-    private String lastName;
+    private Date dateOfCreation;
 
-    @Column(nullable = false)
-    private Date dateOfBirth;
-
-    private String address;
-
-    @Column(nullable = false)
-    private String email;
-
-    private String phoneNumber;
+    private Date dateOfEnd;
 }
