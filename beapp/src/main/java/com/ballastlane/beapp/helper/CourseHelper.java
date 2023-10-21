@@ -16,9 +16,9 @@ public class CourseHelper {
         return userService.isUserAdmin(userEmail);
     }
 
-    public Date addMonths(Date initialDate, Integer months) {
-        LocalDate newDate = initialDate.toLocalDate().plusMonths(months);
+    public Date addMonths(Date startDate, Integer months) {
+        LocalDate endDate = startDate.toLocalDate().plusMonths(months);
 
-        return Date.valueOf(newDate);
+        return Date.valueOf(endDate);
     }
 }

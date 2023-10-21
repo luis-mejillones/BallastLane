@@ -21,7 +21,7 @@ public class Course {
     private String name;
 
     @Column(nullable = false)
-    private Date dateOfCreation;
+    private Date startDate;
 
-    private Date dateOfEnd;
+    private Date endDate;
 }

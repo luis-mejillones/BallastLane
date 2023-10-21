@@ -34,8 +34,8 @@ public class CourseService {
             );
         }
 
-        Date endDate = courseHelper.addMonths(course.getDateOfCreation(), COURSE_DURATION_MONTHS);
-        course.setDateOfEnd(endDate);
+        Date endDate = courseHelper.addMonths(course.getStartDate(), COURSE_DURATION_MONTHS);
+        course.setEndDate(endDate);
 
         return courseRepository.save(course);
     }
