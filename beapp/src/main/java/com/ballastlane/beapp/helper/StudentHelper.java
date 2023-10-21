@@ -8,7 +8,7 @@ import java.sql.Date;
 
 @Service
 public class StudentHelper {
-    public static int MIN_AGE = 16;
+    public static final int MIN_AGE = 16;
 
     public Boolean isValidAge(Date dob) {
         LocalDate curDate = LocalDate.now();

@@ -43,6 +43,7 @@ public class StudentService {
 
     private Boolean existEmail(String email) {
         List<Student> students = studentRepository.findByEmail(email);
+
         return !students.isEmpty();
     }
 }
