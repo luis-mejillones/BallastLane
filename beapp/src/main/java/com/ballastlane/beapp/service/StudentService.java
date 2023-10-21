@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 @Service
 public class StudentService {
@@ -29,8 +30,19 @@ public class StudentService {
                     "Minimum 16 years old"
             );
         }
+
+        if (existEmail(student.getEmail())) {
+            throw new CustomErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email already registered"
+            );
+        }
+
         return studentRepository.save(student);
     }
 
-
+    private Boolean existEmail(String email) {
+        List<Student> students = studentRepository.findByEmail(email);
+        return !students.isEmpty();
+    }
 }
