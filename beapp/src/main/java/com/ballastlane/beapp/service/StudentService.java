@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,7 +82,7 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-    public void saveLogHours(Long studentId, LogHours logHours) {
+    public void saveLogHour(Long studentId, LogHours logHours) {
         int minutes = logHours.getTimeSpent().getMinute();
 
         if (minutes != TIME_SPENT_MINUTES) {
@@ -91,14 +92,57 @@ public class StudentService {
             );
         }
 
+        LocalDate date = toLocalDate(logHours.getDate());
+        LocalDateTime localDateTime = LocalDateTime.of(date, LocalTime.of(0, minutes));
         Student student = getStudent(studentId);
+        logHours.setTimeSpent(localDateTime);
         student.getLogHours().add(logHours);
         studentRepository.save(student);
+    }
+
+    public void updateLogHour(Long studentId, LogHours logHours) {
+        int minutes = logHours.getTimeSpent().getMinute();
+
+        if (minutes != TIME_SPENT_MINUTES) {
+            throw new CustomErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    String.format("The time spent should be in %s minutes range", TIME_SPENT_MINUTES)
+            );
+        }
+
+        LocalDate date = toLocalDate(logHours.getDate());
+        LocalDateTime localDateTime = LocalDateTime.of(date, LocalTime.of(0, minutes));
+        Student student = getStudent(studentId);
+        logHours.setTimeSpent(localDateTime);
+
+        student.getLogHours().stream()
+                .filter(item -> Objects.equals(item.getId(), logHours.getId())).findAny().ifPresent(
+                        currentLogHours -> {
+                            student.getLogHours().remove(currentLogHours);
+                            studentRepository.save(student);
+                        }
+                );
+        student.getLogHours().add(logHours);
+        studentRepository.save(student);
+    }
+
+    public void deleteLogHour(Long studentId, Long logHourId) {
+
     }
 
     private Boolean existEmail(String email) {
         List<Student> students = studentRepository.findByEmail(email);
 
         return !students.isEmpty();
+    }
+
+    private LocalDate toLocalDate(java.sql.Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        return LocalDate.of(year, month, day);
     }
 }

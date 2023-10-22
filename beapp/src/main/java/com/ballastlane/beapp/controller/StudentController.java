@@ -37,10 +37,28 @@ public class StudentController {
 
     @PostMapping("/student/{studentId}/log-hours")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void saveLogHours(
+    public void saveLogHour(
             @PathVariable Long studentId,
             @RequestBody LogHours logHours
     ) throws Exception {
-        studentService.saveLogHours(studentId, logHours);
+        studentService.saveLogHour(studentId, logHours);
+    }
+
+    @PutMapping("/student/{studentId}/log-hours")
+    @ResponseStatus(code = HttpStatus.ACCEPTED)
+    public void updateLogHour(
+            @PathVariable Long studentId,
+            @RequestBody LogHours logHours
+    ) throws Exception {
+        studentService.updateLogHour(studentId, logHours);
+    }
+
+    @DeleteMapping("/student/{studentId}/log-hours{logHourId}")
+    @ResponseStatus(code = HttpStatus.ACCEPTED)
+    public void deleteLogHour(
+            @PathVariable Long studentId,
+            @PathVariable Long logHourId
+    ) throws Exception {
+        studentService.deleteLogHour(studentId, logHourId);
     }
 }
