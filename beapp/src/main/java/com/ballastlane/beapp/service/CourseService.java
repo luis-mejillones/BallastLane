@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +71,20 @@ public class CourseService {
         course.setEndDate(endDate);
 
         return courseRepository.save(course);
+    }
+
+    public List<Course> getAvailableCourses() {
+        List<Course> courses = new ArrayList<>();
+        Date currentDate = new Date(System.currentTimeMillis());
+        courseRepository.findAll().forEach(
+                item -> {
+                    if (item.getEndDate().before(currentDate)) {
+                        courses.add(item);
+                    }
+                }
+            );
+
+        return courses;
     }
 
     private Boolean existCourseName(String name) {

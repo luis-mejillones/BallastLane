@@ -10,9 +10,9 @@ import java.sql.Date;
 public class StudentHelper {
     public static final int MIN_AGE = 16;
 
-    public Boolean isValidAge(Date dob) {
+    public Boolean isValidAge(Date dateOfBirth) {
         LocalDate curDate = LocalDate.now();
-        int ageStudent = Period.between(dob.toLocalDate(), curDate).getYears();
+        int ageStudent = Period.between(dateOfBirth.toLocalDate(), curDate).getYears();
         return ageStudent < MIN_AGE;
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class CourseController {
     @Autowired
@@ -21,5 +23,10 @@ public class CourseController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public Course updateCourse(@PathVariable String userEmail, @RequestBody Course course) throws Exception {
         return courseService.updateCourse(userEmail, course);
+    }
+
+    @GetMapping("/course")
+    public List<Course> getAvailableCourses() {
+        return courseService.getAvailableCourses();
     }
 }

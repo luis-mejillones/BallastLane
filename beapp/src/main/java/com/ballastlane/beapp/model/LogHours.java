@@ -6,23 +6,29 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "course")
+@Table(name = "log_hours")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Course {
+public class LogHours {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private Date date;
+
+    @Enumerated(EnumType.STRING)
+    private TaskCategory taskCategory;
 
     @Column(nullable = false)
-    private Date startDate;
+    private String taskDescription;
 
-    private Date endDate;
+    @Column(nullable = false)
+    private LocalDateTime timeSpent;
+
+
 }
