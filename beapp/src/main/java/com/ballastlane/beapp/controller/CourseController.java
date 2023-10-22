@@ -16,4 +16,10 @@ public class CourseController {
     public Course saveCourse(@PathVariable String userEmail, @RequestBody Course course) throws Exception {
         return courseService.saveCourse(userEmail, course);
     }
+
+    @PutMapping("/course/{userEmail}")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public Course updateCourse(@PathVariable String userEmail, @RequestBody Course course) throws Exception {
+        return courseService.updateCourse(userEmail, course);
+    }
 }

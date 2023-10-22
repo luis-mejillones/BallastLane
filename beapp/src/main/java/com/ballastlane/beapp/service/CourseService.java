@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseService {
@@ -27,6 +28,37 @@ public class CourseService {
                     "Course creation must be done by an Administrator user"
             );
         }
+
+        if (existCourseName(course.getName())) {
+            throw new CustomErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Course Name already exists"
+            );
+        }
+
+        Date endDate = courseHelper.addMonths(course.getStartDate(), COURSE_DURATION_MONTHS);
+        course.setEndDate(endDate);
+
+        return courseRepository.save(course);
+    }
+
+    public Course updateCourse(String userEmail, Course course) {
+        if (!courseHelper.isUserAdmin(userEmail)) {
+            throw new CustomErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Course creation must be done by an Administrator user"
+            );
+        }
+        Optional<Course> optionalCourse = courseRepository.findById(course.getId());
+
+        if (optionalCourse.isPresent()) {
+            Date endDate = courseHelper.addMonths(course.getStartDate(), COURSE_DURATION_MONTHS);
+            course.setEndDate(endDate);
+
+            return courseRepository.save(course);
+        }
+
+        course.setId(null);
         if (existCourseName(course.getName())) {
             throw new CustomErrorException(
                     HttpStatus.BAD_REQUEST,
@@ -43,5 +75,16 @@ public class CourseService {
     private Boolean existCourseName(String name) {
         List<Course> courses = courseRepository.findByName(name);
         return !courses.isEmpty();
+    }
+
+    private Course updateCourse(Course currentCourse, Course newCourse) {
+        if (currentCourse.getName().equals(newCourse.getName())) {
+            throw new CustomErrorException(
+                    HttpStatus.BAD_REQUEST,
+                    "Course Name already exists"
+            );
+        }
+
+        return courseRepository.save(newCourse);
     }
 }
