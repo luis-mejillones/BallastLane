@@ -53,8 +53,8 @@ public class StudentController {
         studentService.updateLogHour(studentId, logHours);
     }
 
-    @DeleteMapping("/student/{studentId}/log-hours{logHourId}")
-    @ResponseStatus(code = HttpStatus.ACCEPTED)
+    @DeleteMapping("/student/{studentId}/log-hours/{logHourId}")
+    @ResponseStatus(code = HttpStatus.OK)
     public void deleteLogHour(
             @PathVariable Long studentId,
             @PathVariable Long logHourId

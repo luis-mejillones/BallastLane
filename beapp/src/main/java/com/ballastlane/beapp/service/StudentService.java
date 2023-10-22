@@ -128,6 +128,15 @@ public class StudentService {
 
     public void deleteLogHour(Long studentId, Long logHourId) {
 
+        Student student = getStudent(studentId);
+
+        student.getLogHours().stream()
+                .filter(item -> Objects.equals(item.getId(), logHourId)).findAny().ifPresent(
+                        currentLogHours -> {
+                            student.getLogHours().remove(currentLogHours);
+                            studentRepository.save(student);
+                        }
+                );
     }
 
     private Boolean existEmail(String email) {
