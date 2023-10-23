@@ -99,6 +99,6 @@ DELETE localhost:8080/student/{studentId}/course/{courseId}/log-hours/{logHourId
 ## FE App (beapp)
 feapp is the frontend app which should be displayed at any browser.
 
-> Note: Due to your authoring skills you are not a FE developer, however this is a very basic feature that only retrieves the first student (studentId=1) who calls the API.
+> Note: Due to author skills, he is not FE developer, however this is a very basic feature that only retrieves the first student (studentId=1) who calls the API.
 
 The FE app can be opened in a browser with this link address http://localhost:4200
