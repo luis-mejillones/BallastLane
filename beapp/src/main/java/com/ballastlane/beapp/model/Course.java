@@ -25,4 +25,10 @@ public class Course {
     private Date startDate;
 
     private Date endDate;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "course_time_spent",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "log_hours_id"))
+    private Set<LogHour> logHours;
 }

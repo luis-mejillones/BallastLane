@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogHours {
+public class LogHour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +29,4 @@ public class LogHours {
 
     @Column(nullable = false)
     private LocalDateTime timeSpent;
-
-
 }

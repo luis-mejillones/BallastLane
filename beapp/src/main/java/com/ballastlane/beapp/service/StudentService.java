@@ -1,9 +1,10 @@
 package com.ballastlane.beapp.service;
 
 import com.ballastlane.beapp.errorhandler.CustomErrorException;
+import com.ballastlane.beapp.helper.LogHourHelper;
 import com.ballastlane.beapp.helper.StudentHelper;
 import com.ballastlane.beapp.model.Course;
-import com.ballastlane.beapp.model.LogHours;
+import com.ballastlane.beapp.model.LogHour;
 import com.ballastlane.beapp.model.Student;
 import com.ballastlane.beapp.repository.CourseRepository;
 import com.ballastlane.beapp.repository.StudentRepository;
@@ -20,16 +21,21 @@ import java.util.stream.Collectors;
 @Service
 public class StudentService {
     private static final int MAX_COURSES_PER_STUDENT = 3;
-    private static final int TIME_SPENT_MINUTES = 30;
 
     @Autowired
     private StudentRepository studentRepository;
 
     @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private LogHourService logHourService;
+
+    @Autowired
     private StudentHelper studentHelper;
 
     @Autowired
-    private CourseRepository courseRepository;
+    private LogHourHelper logHourHelper;
 
     public Student getStudent(Long id) {
         return studentRepository.findById(id).orElse(null);
@@ -82,76 +88,52 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-    public void saveLogHour(Long studentId, LogHours logHours) {
-        int minutes = logHours.getTimeSpent().getMinute();
+    public void saveLogHour(Long studentId, Long courseId, LogHour logHour) {
+        int minutes = logHour.getTimeSpent().getMinute();
 
-        if (minutes != TIME_SPENT_MINUTES) {
+        if (minutes != LogHourHelper.TIME_SPENT_MINUTES) {
             throw new CustomErrorException(
                     HttpStatus.BAD_REQUEST,
-                    String.format("The time spent should be in %s minutes range", TIME_SPENT_MINUTES)
+                    String.format("The time spent should be each %s minutes", LogHourHelper.TIME_SPENT_MINUTES)
             );
         }
 
-        LocalDate date = toLocalDate(logHours.getDate());
+        LocalDate date = logHourHelper.toLocalDate(logHour.getDate());
         LocalDateTime localDateTime = LocalDateTime.of(date, LocalTime.of(0, minutes));
         Student student = getStudent(studentId);
-        logHours.setTimeSpent(localDateTime);
-        student.getLogHours().add(logHours);
-        studentRepository.save(student);
-    }
+        logHour.setTimeSpent(localDateTime);
 
-    public void updateLogHour(Long studentId, LogHours logHours) {
-        int minutes = logHours.getTimeSpent().getMinute();
-
-        if (minutes != TIME_SPENT_MINUTES) {
-            throw new CustomErrorException(
-                    HttpStatus.BAD_REQUEST,
-                    String.format("The time spent should be in %s minutes range", TIME_SPENT_MINUTES)
-            );
-        }
-
-        LocalDate date = toLocalDate(logHours.getDate());
-        LocalDateTime localDateTime = LocalDateTime.of(date, LocalTime.of(0, minutes));
-        Student student = getStudent(studentId);
-        logHours.setTimeSpent(localDateTime);
-
-        student.getLogHours().stream()
-                .filter(item -> Objects.equals(item.getId(), logHours.getId())).findAny().ifPresent(
-                        currentLogHours -> {
-                            student.getLogHours().remove(currentLogHours);
+        student.getCourses().stream()
+                .filter(course -> course.getId().equals(courseId)).findAny().ifPresent(
+                        courseFound -> {
+                            courseFound.getLogHours().add(logHour);
                             studentRepository.save(student);
                         }
                 );
-        student.getLogHours().add(logHours);
-        studentRepository.save(student);
     }
 
-    public void deleteLogHour(Long studentId, Long logHourId) {
-
+    public void deleteLogHour(Long studentId, Long courseId, Long logHourId) {
         Student student = getStudent(studentId);
 
-        student.getLogHours().stream()
-                .filter(item -> Objects.equals(item.getId(), logHourId)).findAny().ifPresent(
-                        currentLogHours -> {
-                            student.getLogHours().remove(currentLogHours);
-                            studentRepository.save(student);
-                        }
-                );
+        student.getCourses().stream()
+        .filter(course -> course.getId().equals(courseId)).findAny().ifPresent(
+                courseFound -> {
+                    courseFound.getLogHours().stream()
+                            .filter(item -> item.getId().equals(logHourId)).findAny().ifPresent(
+                                    item -> {
+                                        courseFound.getLogHours().remove(item);
+                                        studentRepository.save(student);
+                                    }
+                            );
+                }
+        );
+
+        logHourService.deleteLogHour(logHourId);
     }
 
     private Boolean existEmail(String email) {
         List<Student> students = studentRepository.findByEmail(email);
 
         return !students.isEmpty();
-    }
-
-    private LocalDate toLocalDate(java.sql.Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int year = calendar.get(Calendar.YEAR);
-
-        return LocalDate.of(year, month, day);
     }
 }

@@ -20,7 +20,7 @@ public class CourseController {
     }
 
     @PutMapping("/course/{userEmail}")
-    @ResponseStatus(code = HttpStatus.CREATED)
+    @ResponseStatus(code = HttpStatus.OK)
     public Course updateCourse(@PathVariable String userEmail, @RequestBody Course course) throws Exception {
         return courseService.updateCourse(userEmail, course);
     }

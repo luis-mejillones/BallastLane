@@ -1,6 +1,6 @@
 package com.ballastlane.beapp.controller;
 
-import com.ballastlane.beapp.model.LogHours;
+import com.ballastlane.beapp.model.LogHour;
 import com.ballastlane.beapp.model.Student;
 import com.ballastlane.beapp.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,30 +35,23 @@ public class StudentController {
         studentService.takeCourses(studentId, courseIds);
     }
 
-    @PostMapping("/student/{studentId}/log-hours")
+    @PostMapping("/student/{studentId}/course/{courseId}/log-hours")
     @ResponseStatus(code = HttpStatus.CREATED)
     public void saveLogHour(
             @PathVariable Long studentId,
-            @RequestBody LogHours logHours
+            @PathVariable Long courseId,
+            @RequestBody LogHour logHour
     ) throws Exception {
-        studentService.saveLogHour(studentId, logHours);
+        studentService.saveLogHour(studentId, courseId, logHour);
     }
 
-    @PutMapping("/student/{studentId}/log-hours")
-    @ResponseStatus(code = HttpStatus.ACCEPTED)
-    public void updateLogHour(
-            @PathVariable Long studentId,
-            @RequestBody LogHours logHours
-    ) throws Exception {
-        studentService.updateLogHour(studentId, logHours);
-    }
-
-    @DeleteMapping("/student/{studentId}/log-hours/{logHourId}")
+    @DeleteMapping("/student/{studentId}/course/{courseId}/log-hours/{logHourId}")
     @ResponseStatus(code = HttpStatus.OK)
     public void deleteLogHour(
             @PathVariable Long studentId,
+            @PathVariable Long courseId,
             @PathVariable Long logHourId
     ) throws Exception {
-        studentService.deleteLogHour(studentId, logHourId);
+        studentService.deleteLogHour(studentId, courseId, logHourId);
     }
 }
